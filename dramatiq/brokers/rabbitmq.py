@@ -327,12 +327,13 @@ class RabbitmqBroker(Broker):
                 self.logger.debug("Enqueueing message %r on queue %r.", message.message_id, queue_name)
                 self.emit_before("enqueue", message, delay)
                 self.channel.basic_publish(
-                    exchange="",
+                    exchange=message.exchange or "",
                     routing_key=queue_name,
                     body=message.encode(),
                     properties=pika.BasicProperties(
                         delivery_mode=2,
                         priority=message.options.get("broker_priority"),
+                        headers=message.headers,
                     ),
                 )
                 self.emit_after("enqueue", message, delay)
