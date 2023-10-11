@@ -72,6 +72,8 @@ class Message(Generic[R]):
       message_id(str): A globally-unique id assigned to the actor.
       message_timestamp(int): The UNIX timestamp in milliseconds
         representing when the message was first enqueued.
+      exchange(str): The exchange where message should be delivered.
+      headers(dict): Additional headers to add to message
     """
     queue_name: str
     actor_name: str
@@ -80,6 +82,8 @@ class Message(Generic[R]):
     options: Dict[str, Any]
     message_id: str = dataclasses.field(default_factory=generate_unique_id)
     message_timestamp: int = dataclasses.field(default_factory=lambda: int(time.time() * 1000))
+    exchange: str = ""
+    headers: dict = dataclasses.field(default_factory=dict)
 
     def __post_init__(self):
         # For backwards-compatibility, enforce that `args' is a tuple.
